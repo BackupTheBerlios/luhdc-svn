@@ -19,7 +19,7 @@ service_DATA = khusba.desktop
 servicedir = $(kde_servicesdir)
 bin_SCRIPTS = advisor khusba_send khusba_info khusba_usb_list usb_analyze \
 	khusba_send_pci khusba_pci_list khusba_send_usb pci_analyze
-pkgdata_SCRIPTS = usb_analyze.kmdr khusba_pci.kmdr
+pkgdata_SCRIPTS = usb_analyze.kmdr khusba_pci.kmdr guess_x_driver.sh
 
 applnkdir=$(kde_appsdir)/Utilities/
 applnk_DATA = khusba_usb.desktop khusba_pci.desktop

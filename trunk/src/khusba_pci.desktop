@@ -2,12 +2,11 @@
 Encoding=UTF-8
 Type=Application
 Name=khusba
-Name[es]=khusba
-GenericName=Asistente para la BBDD de Hardware PCI
-GenericName[es]=Asistente para la BBDD de Hardware PCI
-Exec=khusba_pci_list
-Comment=Asistente para la BBDD de Hardware PCI
-Comment[es]=Asistente para la BBDD de Hardware PCI
+Name[es]=Khusba
+GenericName=Asistente BBDD de Hardware PCI
+GenericName[es]=Asistente BBDD de Hardware PCI
+Exec=kdesu -c /usr/bin/khusba_pci_list
+Comment=Asistente BBDD de Hardware PCI
+Comment[es]=Asistente BBDD de Hardware PCI
 Icon=hwinfo
 Categories=Qt;KDE;Utility;
-

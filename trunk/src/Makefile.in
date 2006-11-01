@@ -284,7 +284,7 @@ servicedir = $(kde_servicesdir)
 bin_SCRIPTS = advisor khusba_send khusba_info khusba_usb_list usb_analyze \
 	khusba_send_pci khusba_pci_list khusba_send_usb pci_analyze
 
-pkgdata_SCRIPTS = usb_analyze.kmdr khusba_pci.kmdr
+pkgdata_SCRIPTS = usb_analyze.kmdr khusba_pci.kmdr guess_x_driver.sh
 
 applnkdir = $(kde_appsdir)/Utilities/
 applnk_DATA = khusba_usb.desktop khusba_pci.desktop
@@ -783,7 +783,7 @@ clean-metasources:
 	-rm -f  syslauncher.moc.cpp traywin.moc.cpp
 
 #>+ 2
-KDE_DIST=advisor khusba_send_pci khusba_pci.kmdr khusba_usb.desktop khusba_pci_list khusba_info khupopup khusba.desktop khusba_send khpopoup.ui.h z99_zkhusba.rules usb_analyze.kmdr khusba.kidl Makefile.in khusba_pci.desktop usb_analyze khusba.lsm khpopoup.h khusba_icon.png khpopoup.ui khusba khusba_usb_list pci_analyze khusba_send_usb 
+KDE_DIST=advisor khusba_send_pci khusba_pci.kmdr khusba_usb.desktop Makefile.in khusba_pci_list khusba_info khupopup khusba_pci.desktop khusba.desktop usb_analyze khusba_send khusba.lsm khpopoup.ui.h khusba_icon.png khpopoup.ui guess_x_driver.sh z99_zkhusba.rules usb_analyze.kmdr khusba_usb_list pci_analyze khusba_send_usb 
 
 #>+ 4
 clean-idl:
@@ -828,7 +828,7 @@ bcheck-am:
 
 
 #>+ 11
-khusba.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/main.cpp $(srcdir)/khusba.cpp $(srcdir)/traywin.cpp $(srcdir)/syslauncher.cpp $(srcdir)/khusba_skel.cpp $(srcdir)/khpopoup.cpp $(srcdir)/syslauncher.moc.cpp $(srcdir)/traywin.moc.cpp  khpopoup.moc
+khusba.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/main.cpp $(srcdir)/khusba.cpp $(srcdir)/traywin.cpp $(srcdir)/syslauncher.cpp khusba_skel.cpp khpopoup.cpp syslauncher.moc.cpp traywin.moc.cpp  khpopoup.moc
 	@echo 'creating khusba.all_cpp.cpp ...'; \
 	rm -f khusba.all_cpp.files khusba.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> khusba.all_cpp.final; \

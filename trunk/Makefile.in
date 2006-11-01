@@ -728,7 +728,7 @@ dist-hook:
 .NOEXPORT:
 
 #>+ 2
-KDE_DIST=configure.files build-stamp khusba.kdevelop.pcs Doxyfile khusba.kdevses stamp-h.in subdirs Makefile.in khusba.kdevelop Makefile.cvs svn-commit.tmp 
+KDE_DIST=stamp-h.in subdirs Makefile.in configure.files build-stamp khusba.kdevelop Makefile.cvs khusba.kdevelop.pcs Doxyfile svn-commit.tmp khusba.kdevses 
 
 #>+ 2
 docs-am:

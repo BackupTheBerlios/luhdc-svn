@@ -22,14 +22,16 @@ Gracias por su colaboración")
     exit 1 
   fi
   echo "Sending report"
+  rm $TMPFILE.res
   wget --post-file=$TMPFILE $URL  -O $TMPFILE.res
   #rm $TMPFILE.res
   rm $TMPFILE
+  rm $TMPFILE.xg
   echo $(which konqueror) --profile SimpleWindow file://$TMPFILE.res "DISPLAY:$DISPLAY"
-  $(which konqueror) file://$TMPFILE.res 
-  rm $TMPFILE
-else
+  (exec $(which konqueror) file://$TMPFILE.res)&>/dev/null&
   
+else
+  if [ -z "$1" ];then exit 0;fi    
   RVI=$(echo $1|cut -f1 -d":")
   RPI=$(echo $1|cut -f2 -d":")
   APRODUCT=$(pci_analyze $1|cut -f1 -d";")
@@ -43,7 +45,27 @@ else
   echo "bus=PCI" >> $TMPFILE
   echo "driver1=$ADRIVER" >> $TMPFILE
   echo "driver1_version="$(/sbin/modinfo $ADRIVER|grep vermagic|cut -f2 -d":"|sed s/"^ \+"/""/) >> $TMPFILE 2>/dev/null
-  SYSTEM=$(for i in $(ls /etc/*_version); do (echo $(echo $i|cut -f1 -d"_"|cut -f3 -d"/"):$(cat $i))2>/dev/null; done)
+  # X PATCH
+  PROCP=$(lspci  -n|grep ${RVI}:${RPI}|cut -f2,3 -d":"|cut -f1 -d" ")
+  PROCPA=$(echo $PROCP |cut -f1 -d":")
+  PROCPB=$(echo $PROCP |cut -f2 -d":")
+  if (lsof /proc/bus/pci/$PROCPA/$PROCPB 2>/dev/null |grep ^Xorg &>/dev/null)
+  then
+     # this device is used by Xorg 
+     if [ ! -f $TMPFILE.xg ]
+     then
+       XGDRV=$(/usr/share/khusba/guess_x_driver.sh show)
+       echo $XGDRV > $TMPFILE.xg
+     else
+       XGDRV=$(cat $TMPFILE.xg)
+     fi
+     echo "driver2=$XGDRV" >> $TMPFILE
+     echo "driver2_version="$(/usr/share/khusba/guess_x_driver.sh) >> $TMPFILE 
+  fi 
+
+
+
+   SYSTEM=$(for i in $(ls /etc/*_version); do (echo $(echo $i|cut -f1 -d"_"|cut -f3 -d"/"):$(cat $i))2>/dev/null; done)
   if [ -f /etc/lsb-release ];then . /etc/lsb-release;fi
   SYSTEM="$SYSTEM $DISTRIB_DESCRIPTION $DISTRIB_CODENAME"
 

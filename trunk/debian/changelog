@@ -1,3 +1,9 @@
+khusba (0.1-15) unstable; urgency=low
+
+  * Try to guess X driver 
+
+ -- Tyler Maister <tyler@maister.no-ip.org>  Wed,  1 Nov 2006 18:55:52 +0100
+
 khusba (0.1-14) unstable; urgency=low
 
   * Added support for Ubuntu Dapper 
