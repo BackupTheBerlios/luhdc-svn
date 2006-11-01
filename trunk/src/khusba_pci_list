@@ -1,0 +1,3 @@
+#!/bin/bash
+
+kmdr-executor /usr/share/khusba/khusba_pci.kmdr

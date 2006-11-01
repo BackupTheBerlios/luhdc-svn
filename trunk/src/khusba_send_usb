@@ -1,0 +1,49 @@
+#!/bin/bash
+# Sends info about a item
+VENXPRO=$1;
+URL="http://luhd.awardspace.info/public_action_send_multi.php"
+#URL="http://maister.no-ip.org/proyectos/lufhd//public_action_send_multi.php"
+
+
+
+TMPFILE=/tmp/.j.sending${USER}
+
+
+if [ ! -z "$3" ]
+then
+    if (kdialog --icon info --caption "KHUSBA - Enviando informacion" --yesno \
+"El sistema se conectará a 'linux user hardware database' para introducir el estado de compatibilidad de este dispositivo. 
+Ninguna información personal se enviará en este proceso, sólo informacion relacionada con el estado de funcionamiento del driver. 
+Gracias por su colaboración")
+  then 
+    echo "ok"
+  else
+    exit 1 
+  fi
+  echo "Sending report"
+  wget --post-file=$TMPFILE $URL  -O $TMPFILE.res
+  #rm $TMPFILE.res
+  rm $TMPFILE
+  $(which konqueror) file://$TMPFILE.res 
+else
+  RVI=$(echo $1|cut -f1 -d":")
+  RPI=$(echo $1|cut -f2 -d":")
+  APRODUCT=$(usb_analyze $1|cut -f1 -d";")
+  ADRIVER=$(usb_analyze $1|cut -f2 -d";")
+  COUNT=$2
+  IFILE=$HOME/.khusba/cache/$(echo ${RVI}${RPI})
+  echo "&DATA[$COUNT]=" >> $TMPFILE
+  cat $IFILE|grep -v ^DATA >> $TMPFILE
+  echo "" >> $TMPFILE
+fi
+
+
+
+
+
+
+
+
+
+
+

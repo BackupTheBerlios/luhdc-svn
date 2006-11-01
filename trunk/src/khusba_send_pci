@@ -1,0 +1,67 @@
+
+#!/bin/bash
+# Sends info about a item
+VENXPRO=$1;
+URL="http://luhd.awardspace.info/public_action_send_multi.php"
+#URL="http://maister.no-ip.org/proyectos/lufhd//public_action_send_multi.php"
+
+
+
+TMPFILE=/tmp/.k.sending${USER}
+
+
+if [ ! -z "$3" ]
+then
+    if (kdialog --icon info --caption "KHUSBA - Enviando informacion" --yesno \
+"El sistema se conectará a 'linux user hardware database' para introducir el estado de compatibilidad de este dispositivo. 
+Ninguna información personal se enviará en este proceso, sólo informacion relacionada con el estado de funcionamiento del driver. 
+Gracias por su colaboración")
+  then 
+    echo "ok"
+  else
+    exit 1 
+  fi
+  echo "Sending report"
+  wget --post-file=$TMPFILE $URL  -O $TMPFILE.res
+  #rm $TMPFILE.res
+  rm $TMPFILE
+  echo $(which konqueror) --profile SimpleWindow file://$TMPFILE.res "DISPLAY:$DISPLAY"
+  $(which konqueror) file://$TMPFILE.res 
+  rm $TMPFILE
+else
+  
+  RVI=$(echo $1|cut -f1 -d":")
+  RPI=$(echo $1|cut -f2 -d":")
+  APRODUCT=$(pci_analyze $1|cut -f1 -d";")
+  ADRIVER=$(pci_analyze $1|cut -f2 -d";")
+  
+  COUNT=$2
+  echo "&DATA[$COUNT]=" >> $TMPFILE
+  echo "vendorxproduct=${RVI}:${RPI}" >> $TMPFILE
+  echo "description=$APRODUCT" >> $TMPFILE
+  echo "altdescription=$ALTNAME" >> $TMPFILE
+  echo "bus=PCI" >> $TMPFILE
+  echo "driver1=$ADRIVER" >> $TMPFILE
+  echo "driver1_version="$(/sbin/modinfo $ADRIVER|grep vermagic|cut -f2 -d":"|sed s/"^ \+"/""/) >> $TMPFILE 2>/dev/null
+  SYSTEM=$(for i in $(ls /etc/*_version); do (echo $(echo $i|cut -f1 -d"_"|cut -f3 -d"/"):$(cat $i))2>/dev/null; done)
+  if [ -f /etc/lsb-release ];then . /etc/lsb-release;fi
+  SYSTEM="$SYSTEM $DISTRIB_DESCRIPTION $DISTRIB_CODENAME"
+
+  echo "system="$SYSTEM >> $TMPFILE
+  echo "sfamily="$(uname -s -r -v  -m -p -i -o) >> $TMPFILE
+  echo "kversion="$(uname -r) >> $TMPFILE
+  shash=$(md5sum $TMPFILE|cut -f1 -d" ")
+  echo "shash=$shash" >> $TMPFILE
+  echo "" >> $TMPFILE
+fi
+
+
+
+
+
+
+
+
+
+
+

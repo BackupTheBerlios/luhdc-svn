@@ -1,0 +1,21 @@
+#!/bin/bash
+# Sends info about a item
+
+VID=$(echo $1|cut -b1-4)
+PID=$(echo $1|cut -b5-8)
+rm /tmp/.j.$USER
+khusba_send_usb ${VID}:${PID} 1
+khusba_send_usb 0000:0000 0 send 
+
+
+
+
+
+
+
+
+
+
+
+
+

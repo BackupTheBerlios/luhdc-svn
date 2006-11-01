@@ -1,0 +1,14 @@
+Source: khusba
+Section: unknown
+Priority: optional
+Maintainer: Tyler Maister <tyler@maister.no-ip.org>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev
+Standards-Version: 3.6.1
+
+Package: khusba
+Architecture: any
+Depends: udev, kommander, pciutils, ${shlibs:Depends}, ${misc:Depends}
+Description: KDE Hotplug USB Advisor
+ The KDE Hotplug USB Advisor. Just a little app to
+ show users if their USB gadgets have been detected
+ and used by system
