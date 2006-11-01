@@ -1,3 +1,0 @@
-#!/bin/bash
-
-kmdr-executor /usr/share/khusba/usb_analyze.kmdr
