@@ -19,6 +19,8 @@ function altName {
 
 }
 
+#SuSE patch
+if [ -z "$USER" ];then . /etc/profile;fi
 
 if [ -z "$DEVICE" ]
 then
