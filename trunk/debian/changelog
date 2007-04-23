@@ -1,3 +1,11 @@
+khusba (0.1-16) unstable; urgency=low
+
+  * Reworked driver detection
+  * Depends on hwinfo
+  * Faster execution
+
+ -- Tyler Maister <tyler@maister.no-ip.org>  Mon, 23 Apr 2007 19:35:53 +0000
+
 khusba (0.1-15) unstable; urgency=low
 
   * Try to guess X driver 

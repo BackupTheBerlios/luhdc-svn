@@ -7,7 +7,7 @@ Standards-Version: 3.6.1
 
 Package: khusba
 Architecture: any
-Depends: udev, kommander, pciutils, ${shlibs:Depends}, ${misc:Depends}
+Depends: udev, kommander, pciutils, hwinfo (>=13.11),  ${shlibs:Depends}, ${misc:Depends}
 Description: KDE Hotplug USB Advisor
  The KDE Hotplug USB Advisor. Just a little app to
  show users if their USB gadgets have been detected

@@ -1,16 +1,87 @@
 #!/bin/bash
 
-if [ -z "$1" ]
+mkdir -p /var/cache/khusba
+if [ ! -f /var/cache/khusba/.hwinfo.pci ]
 then
-	exit 0
+   hwinfo --pci &>/var/cache/khusba/.hwinfo.pci
 fi
-VID=$(lspci -n|grep "$1"|head -n1|cut -f4 -d":");   
-BUS=$(lspci -n|grep "$1"|head -n1|cut -f1 -d" ");   
-DIP=$(lspci -n|grep "$1"|head -n1|cut -f5 -d":"|cut -f1 -d" ");
-OIP=$(lspci -n|grep "$1"|head -n1|cut -f2 -d" "|cut -f1 -d":");
-NAME=$(lspci|grep "$BUS"|head -n1|cut -f4 -d":");
- 
-DRIVER=$(cat /proc/bus/pci/devices |grep ${VID}${DIP} |head -n1|cut -f18|uniq|sort)
-DATA=$(echo "$NAME;$DRIVER")
-echo $DATA
-         
+
+
+declare BLOCKS=($(cat /var/cache/khusba/.hwinfo.pci |grep -n "^[0-9][0-9]:"|cut -f1 -d":"))
+TOTAL=$(echo ${BLOCKS[*]}|wc -w)
+function fshow { 
+
+  FTOTAL=$(cat $1|wc -l); 
+  INI=$2; 
+  END=$3; 
+  if [ -z "$END" ] 
+  then    
+    END=$FTOTAL; 
+  fi; 
+  tail -n$(( $FTOTAL-$INI+1 )) $1 |head -$(( $END-$INI )); 
+}
+
+for i in $(seq 0 $(( $TOTAL-1 ))); 
+do
+
+  if [ -z "$1" ]
+  then
+    FNAME=/var/cache/khusba/$(uuidgen)
+    fshow /var/cache/khusba/.hwinfo.pci ${BLOCKS[$(( $i ))]} ${BLOCKS[$(( $i+1 ))]} > $FNAME
+    UNINAME=$(cat $FNAME |grep " Vendor: pci"|sed s/"^ \+"/""/g|cut -f3 -d" ")":"$(cat $FNAME |grep " Device: pci"| sed s/"^ \+"/""/g|cut -f3 -d" ") 
+    UNIQNAME=$(echo $UNINAME|sed s/"0x"/""/g)
+    mv $FNAME /var/cache/khusba/$UNIQNAME
+    FNAME=/var/cache/khusba/$UNIQNAME    
+  else
+    FNAME=/var/cache/khusba/$1
+  fi
+     
+  
+  NAME=$( echo $( grep "Model:" $FNAME |cut -f2 -d":"|sed s/"\""/""/g) )
+  #;grep "Device:" $FNAME;grep "SubVendor:" $FNAME )
+  VENDORS=$( echo $( grep "Vendor:" $FNAME |cut -f2 -d":"|sed s/"\""/""/g|sed s/"pci ......"/"#"/g) )
+  DEVICE=$( echo $( grep "Device:" $FNAME |cut -f2 -d":"|sed s/"\""/""/g|sed s/"pci ......"/""/g) )
+  DRIVER=$( echo $( grep "Driver Modules: " $FNAME|cut -f2 -d":"|cut -f2- -d" " |sed s/"\""/""/g) )
+  DRIVER2=$( grep "XFree86 v4 Server Module:"  $FNAME|cut -f2 -d":"|cut -f2- -d" ")
+  XDRIVER=$(echo $DRIVER2)
+  if [ -z "$1" ]
+  then
+    echo -e "XXNAME\t$NAME"
+    echo -e "XXVENDOR\t$VENDORS"
+    echo -e "XXDRIVER\t$DRIVER"
+    echo -e "XXDRIVER2\t$XDRIVER"
+    echo "-----------------------------------";
+    
+	    
+  else
+    VID=$(echo $1|cut -f1 -d":")
+    PID=$(echo $1|cut -f2 -d":")
+    if (grep $VID $FNAME |grep Vendor &>/dev/null)
+    then
+      if (grep $PID $FNAME |grep Device &>/dev/null)
+      then 
+         if [ -z "$2" ]
+	 then
+	    echo "$DEVICE;$DRIVER $XDRIVER"
+         elif [ "$2" = "VENDORS" ];then
+	    echo $VENDORS
+	 elif [ "$2" = "NAME" ];then
+	    echo $NAME
+	 elif [ "$2" = "DRIVER" ];then
+	    echo $DRIVER
+	 elif [ "$2" = "XDRIVER" ];then
+	    echo $XDRIVER
+ 	 elif [ "$2" = "INFO" ];then
+	    echo "$NAME by $VENDORS"
+  	 elif [ "$2" = "DEVICE" ];then
+	    echo "$DEVICE"
+	     
+	 fi
+      break;
+      fi
+    fi
+  fi
+  
+done
+
+  
