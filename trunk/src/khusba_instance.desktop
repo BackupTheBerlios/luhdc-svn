@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=khusba
+Exec=khusba
+Icon=ktip
+Terminal=false
+X-KDE-StartupNotify=false
+X-DCOP-ServiceType=Unique
+Categories=Qt;KDE;Utility;X-KDE-Utilities-Desktop;
+OnlyShowIn=KDE;

@@ -1,13 +1,67 @@
+
 #!/bin/bash
 # Sends info about a item
-
-VID=$(echo $1|cut -b1-4)
-PID=$(echo $1|cut -b5-8)
-rm /tmp/.j.$USER
-khusba_send_usb ${VID}:${PID} 1
-khusba_send_usb 0000:0000 0 send 
+VENXPRO=$1;
+URL="http://luhd.awardspace.info/public_action_send_multi.php"
+#URL="http://maister.no-ip.org/proyectos/lufhd//public_action_send_multi.php"
 
 
+
+TMPFILE=/tmp/.k.sending${USER}
+
+
+if [ ! -z "$3" ]
+then
+    if (kdialog --icon info --caption "KHUSBA - Enviando informacion" --yesno \
+"El sistema se conectará a 'linux user hardware database' para introducir el estado de compatibilidad de este dispositivo. 
+Ninguna información personal se enviará en este proceso, sólo informacion relacionada con el estado de funcionamiento del driver. 
+Gracias por su colaboración")
+  then 
+    echo "ok"
+  else
+    exit 1 
+  fi
+  echo "Sending report"
+  rm $TMPFILE.res
+  wget --post-file=$TMPFILE $URL  -O $TMPFILE.res
+  #rm $TMPFILE.res
+  rm $TMPFILE
+  rm $TMPFILE.xg
+  echo $(which konqueror) --profile SimpleWindow file://$TMPFILE.res "DISPLAY:$DISPLAY"
+  (exec $(which konqueror) file://$TMPFILE.res)&>/dev/null&
+  
+else
+  if [ -z "$1" ];then exit 0;fi    
+  RVI=$(echo $1|cut -f1 -d":")
+  RPI=$(echo $1|cut -f2 -d":")
+  APRODUCT=$(pci_analyze $1 DEVICE)
+  ADRIVER=$(pci_analyze $1 DRIVER)
+  ALTNAME=$(pci_analyze $1 INFO)
+  XGDRV=$(pci_analyze $1 XDRIVER)
+  COUNT=$2
+  echo "&DATA[$COUNT]=" >> $TMPFILE
+  echo "vendorxproduct=${RVI}:${RPI}" >> $TMPFILE
+  echo "description=$APRODUCT" >> $TMPFILE
+  echo "altdescription=$ALTNAME" >> $TMPFILE
+  echo "bus=PCI" >> $TMPFILE
+  echo "driver1=$ADRIVER" >> $TMPFILE
+  echo "driver1_version="$(/sbin/modinfo $ADRIVER|grep vermagic|cut -f2 -d":"|sed s/"^ \+"/""/) >> $TMPFILE 2>/dev/null
+  if [ ! -z  "$XGDRV" ]
+  then
+     echo "driver2=$XGDRV" >> $TMPFILE
+     echo "driver2_version="$(/usr/share/khusba/guess_x_driver.sh) >> $TMPFILE 
+  fi
+  SYSTEM=$(for i in $(ls /etc/*_version); do (echo $(echo $i|cut -f1 -d"_"|cut -f3 -d"/"):$(cat $i))2>/dev/null; done)
+  if [ -f /etc/lsb-release ];then . /etc/lsb-release;fi
+  SYSTEM="$SYSTEM $DISTRIB_DESCRIPTION $DISTRIB_CODENAME"
+
+  echo "system="$SYSTEM >> $TMPFILE
+  echo "sfamily="$(uname -s -r -v  -m -p -i -o) >> $TMPFILE
+  echo "kversion="$(uname -r) >> $TMPFILE
+  shash=$(echo "SYSTEM"$(uname -s -r -v  -m -p -i -o) ${RVI}:${RPI} |md5sum|cut -f1 -d" ")
+  echo "shash=$shash" >> $TMPFILE
+  echo "" >> $TMPFILE
+fi
 
 
 

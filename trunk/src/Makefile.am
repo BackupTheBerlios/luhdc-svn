@@ -25,3 +25,5 @@ applnkdir=$(kde_appsdir)/Utilities/
 applnk_DATA = khusba_usb.desktop khusba_pci.desktop
 iconsdir = @kde_icondir@
 icons_DATA=khusba_icon.png
+autostartdir=/usr/share/autostart/
+autostart_DATA=khusba_instance.desktop
