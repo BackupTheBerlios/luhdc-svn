@@ -4,7 +4,7 @@ ARG="$1"
 VID=$(echo $ARG|cut -b1,2,3,4)
 PID=$(echo $ARG|cut -b5,6,7,8)
 
-URL="http://luhd.awardspace.info/Pages/Search/List/vendorxproduct=$VID:$PID"
+URL="http://luhdc.berlios.de/Pages/Search/List/vendorxproduct=$VID:$PID"
 konqueror $URL
 
 

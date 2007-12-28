@@ -1,9 +1,9 @@
 #!/bin/bash
 # Sends info about a item
 VENXPRO=$1;
-URL="http://luhd.awardspace.info/public_action_send_multi.php"
+#URL="http://luhd.awardspace.info/public_action_send_multi.php"
 #URL="http://maister.no-ip.org/proyectos/lufhd//public_action_send_multi.php"
-
+URL="http://luhdc.berlios.de/public_action_send_multi.php"
 
 
 TMPFILE=/tmp/.j.sending${USER}
